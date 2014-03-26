@@ -83,8 +83,12 @@
 /* CPU(MIPS) - MIPS 32-bit */
 /* Note: Only O32 ABI is tested, so we enable it for O32 ABI for now.  */
 #if (defined(mips) || defined(__mips__) || defined(MIPS) || defined(_MIPS_)) \
-    && defined(_ABIO32)
+    && (defined(_ABIO32) || defined(_ABI64))
+#ifdef _ABI64
+#define WTF_CPU_MIPS64 1
+#else
 #define WTF_CPU_MIPS 1
+#endif
 #if defined(__MIPSEB__)
 #define WTF_CPU_BIG_ENDIAN 1
 #endif
@@ -149,6 +153,11 @@
 #if   defined(__x86_64__) \
     || defined(_M_X64)
 #define WTF_CPU_X86_64 1
+
+#if defined(__ILP32__)
+#define WTF_CPU_X86_X32 1
+#endif
+
 #endif
 
 /* CPU(ARM64) - Apple */
@@ -312,6 +321,15 @@
 #endif
 
 #endif /* ARM */
+
+/* CPU(AARCH64) - AArch64 */
+
+#if defined(__aarch64__)
+#define WTF_CPU_AARCH64 1
+#if defined(__AARCH64EB__)
+#define WTF_CPU_BIG_ENDIAN 1
+#endif
+#endif
 
 #if CPU(ARM) || CPU(MIPS) || CPU(SH4)
 #define WTF_CPU_NEEDS_ALIGNED_ACCESS 1
@@ -636,11 +654,13 @@
 #endif
 
 #if !defined(WTF_USE_JSVALUE64) && !defined(WTF_USE_JSVALUE32_64)
-#if (CPU(X86_64) && (OS(UNIX) || OS(WINDOWS))) \
+#if (CPU(X86_64) && (OS(UNIX) || OS(WINDOWS)) && !CPU(X86_X32)) \
     || (CPU(IA64) && !CPU(IA64_32)) \
     || CPU(ALPHA) \
     || CPU(ARM64) \
     || CPU(S390X) \
+    || CPU(AARCH64) \
+    || CPU(MIPS64) \
     || CPU(PPC64)
 #define WTF_USE_JSVALUE64 1
 #else
@@ -653,6 +673,12 @@
 #define ENABLE_JIT 0
 #define ENABLE_DFG_JIT 0
 #define ENABLE_FTL_JIT 0
+#endif
+
+#if !defined(ENABLE_JIT) && (CPU(X86_X32) || CPU(AARCH64) || CPU(PPC) || CPU(PPC64)) || CPU(MIPS64)
+#define ENABLE_JIT 0
+#define ENABLE_YARR_JIT 0
+#define ENABLE_ASSEMBLER 0
 #endif
 
 /* Disable the JIT on versions of GCC prior to 4.1 */
