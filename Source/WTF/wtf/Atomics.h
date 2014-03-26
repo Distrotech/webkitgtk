@@ -146,7 +146,11 @@ inline bool weakCompareAndSwap(void*volatile* location, void* expected, void* ne
 #if CPU(X86_64)
     bool result;
     asm volatile(
+#ifdef __ILP32__
+        "lock; cmpxchg %3, %2\n\t"
+#else
         "lock; cmpxchgq %3, %2\n\t"
+#endif
         "sete %1"
         : "+a"(expected), "=q"(result), "+m"(*location)
         : "r"(newValue)
