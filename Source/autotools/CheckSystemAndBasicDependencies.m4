@@ -87,7 +87,7 @@ AC_SYS_LARGEFILE
 c_compiler="unknown"
 AC_LANG_PUSH([C])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
-#if !(defined(__GNUC__) && !defined(__clang__) && !defined(__INTEL_COMPILER) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 7)
+#if !(defined(__GNUC__) && !defined(__clang__) && !defined(__INTEL_COMPILER) && ((__GNUC__ >= 4 && __GNUC_MINOR__ >= 7) || __GNUC__ >= 5))
 #error Not a supported GCC compiler
 #endif
 ])], [c_compiler="gcc"], [])
@@ -106,7 +106,7 @@ fi
 cxx_compiler="unknown"
 AC_LANG_PUSH([C++])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
-#if !(defined(__GNUG__) && defined(__GNUC__) && !defined(__clang__) && !defined(__INTEL_COMPILER) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 7)
+#if !(defined(__GNUG__) && defined(__GNUC__) && !defined(__clang__) && !defined(__INTEL_COMPILER) && ((__GNUC__ >= 4 && __GNUC_MINOR__ >= 7) || __GNUC__ >= 5))
 #error Not a supported G++ compiler
 #endif
 ])], [cxx_compiler="g++"], [])
