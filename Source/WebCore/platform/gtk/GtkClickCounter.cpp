@@ -85,8 +85,8 @@ int GtkClickCounter::clickCountForGdkButtonEvent(GtkWidget* widget, GdkEventButt
     guint32 eventTime = getEventTime(event);
 
     if ((event->type == GDK_2BUTTON_PRESS || event->type == GDK_3BUTTON_PRESS)
-        || ((abs(buttonEvent->x - m_previousClickPoint.x()) < doubleClickDistance)
-            && (abs(buttonEvent->y - m_previousClickPoint.y()) < doubleClickDistance)
+        || ((std::abs(buttonEvent->x - m_previousClickPoint.x()) < doubleClickDistance)
+            && (std::abs(buttonEvent->y - m_previousClickPoint.y()) < doubleClickDistance)
             && (eventTime - m_previousClickTime < static_cast<guint>(doubleClickTime))
             && (buttonEvent->button == m_previousClickButton)))
         m_currentClickCount++;
